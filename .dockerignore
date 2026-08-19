@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+.env.local
+web/node_modules
+web/dist
+bin/
+*.exe
+data/ipdb/*.xdb
+data/ipdb/*.mmdb

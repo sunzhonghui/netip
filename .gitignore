@@ -1,0 +1,38 @@
+# Binaries and build outputs
+/bin/
+/dist/
+web/dist/
+web/node_modules/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.zip
+*.tar.gz
+
+# Test and coverage
+*.out
+*.test
+*.tsbuildinfo
+web/.vitest*
+web/vite.config.d.ts
+web/vite.config.js
+
+# Environment and secrets
+.env
+.env.local
+*.secret
+
+# IDE and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Data files (keep directory, ignore heavy DB downloads)
+data/ipdb/*.xdb
+data/ipdb/*.mmdb
+data/ipdb/*.dat

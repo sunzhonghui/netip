@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Allow: /ip
+Allow: /dns
+Allow: /ping
+Allow: /ipv6
+Allow: /ssl
+Allow: /whois
+Allow: /asn
+Allow: /http
+Allow: /speed
+Allow: /docs/api
+
+Disallow: /api/
+Disallow: /probe/
+Disallow: /metrics
+Disallow: /healthz
+Disallow: /readyz
+
+Sitemap: https://ip.ipw.3x.cx/sitemap.xml

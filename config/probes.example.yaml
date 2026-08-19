@@ -1,0 +1,27 @@
+# Probes configuration example
+# When configured, NetIP server will fan-out diagnostic requests to these remote probe nodes.
+
+probes:
+  - id: cn-beijing-01
+    name: 北京
+    isp: 中国电信
+    url: https://bj-node.ipw.3x.cx
+    secret: your-secure-shared-secret-here
+
+  - id: cn-shanghai-01
+    name: 上海
+    isp: 中国联通
+    url: https://sh-node.ipw.3x.cx
+    secret: your-secure-shared-secret-here
+
+  - id: cn-guangzhou-01
+    name: 广州
+    isp: 中国移动
+    url: https://gz-node.ipw.3x.cx
+    secret: your-secure-shared-secret-here
+
+  - id: us-west-01
+    name: 美西
+    isp: 海外骨干网
+    url: https://us-node.ipw.3x.cx
+    secret: your-secure-shared-secret-here

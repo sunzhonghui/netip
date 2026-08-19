@@ -1,0 +1,60 @@
+# Global Caddy Options
+{
+	admin off
+	auto_https disable_redirects
+}
+
+# Main Application & API Domain
+{$PUBLIC_DOMAIN:ip.ipw.3x.cx} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy netip:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+	}
+}
+
+# IPv4-Only Direct Endpoint (A Record Only)
+{$IPV4_DOMAIN:4.ipw.3x.cx} {
+	encode zstd gzip
+
+	reverse_proxy netip:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+	}
+}
+
+# IPv6-Only Direct Endpoint (AAAA Record Only)
+{$IPV6_DOMAIN:6.ipw.3x.cx} {
+	encode zstd gzip
+
+	reverse_proxy netip:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+	}
+}
+
+# Dual-Stack Connection Priority Test Endpoint
+{$TEST_DOMAIN:test.ipw.3x.cx} {
+	encode zstd gzip
+
+	reverse_proxy netip:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+	}
+}

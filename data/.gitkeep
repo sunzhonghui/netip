@@ -1,0 +1,2 @@
+# NetIP persistent data directory
+# Place optional ip2region.xdb, GeoLite2-City.mmdb, GeoLite2-ASN.mmdb into ipdb/
