@@ -4,7 +4,10 @@
 FROM node:22-alpine AS frontend-builder
 WORKDIR /app/web
 
-COPY web/package.json ./
+ARG NPM_REGISTRY=https://registry.npmmirror.com
+RUN npm config set registry ${NPM_REGISTRY}
+
+COPY web/package.json web/package-lock.json* ./
 RUN npm install
 
 COPY web/ ./
@@ -15,6 +18,8 @@ RUN npm run build
 # ==========================================
 FROM golang:1.25-bookworm AS backend-builder
 WORKDIR /app
+
+ENV GOPROXY=https://goproxy.cn,https://proxy.golang.org,direct
 
 # Cache Go modules
 COPY go.mod go.sum ./

@@ -6,13 +6,13 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    ports:
+      - "127.0.0.1:8080:8080"
     volumes:
       - ./data:/data
       - ./config:/config:ro
     cap_add:
       - NET_RAW
-    expose:
-      - "8080"
     healthcheck:
       test: ["CMD", "/bin/netip", "-v"]
       interval: 30s
@@ -20,26 +20,27 @@ services:
       retries: 3
       start_period: 5s
 
-  caddy:
-    image: caddy:2
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "80:80/udp"
-      - "443:443/udp"
-    environment:
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-ip.ipw.3x.cx}
-      - IPV4_DOMAIN=${IPV4_DOMAIN:-4.ipw.3x.cx}
-      - IPV6_DOMAIN=${IPV6_DOMAIN:-6.ipw.3x.cx}
-      - TEST_DOMAIN=${TEST_DOMAIN:-test.ipw.3x.cx}
-    volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - netip
+  # Optional Caddy reverse proxy (enabled only if you don't have OpenResty/Nginx)
+  # caddy:
+  #   image: caddy:2
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #     - "80:80/udp"
+  #     - "443:443/udp"
+  #   environment:
+  #     - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-ip.ipw.3x.cx}
+  #     - IPV4_DOMAIN=${IPV4_DOMAIN:-4.ipw.3x.cx}
+  #     - IPV6_DOMAIN=${IPV6_DOMAIN:-6.ipw.3x.cx}
+  #     - TEST_DOMAIN=${TEST_DOMAIN:-test.ipw.3x.cx}
+  #   volumes:
+  #     - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   depends_on:
+  #     - netip
 
-volumes:
-  caddy_data:
-  caddy_config:
+# volumes:
+#   caddy_data:
+#   caddy_config:
