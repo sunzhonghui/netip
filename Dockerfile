@@ -4,13 +4,9 @@
 FROM golang:1.25-bookworm AS backend-builder
 WORKDIR /app
 
-ENV GOPROXY=https://goproxy.cn,https://proxy.golang.org,direct
+ENV GOPROXY=https://proxy.golang.org,direct
 
-# Cache Go modules
-COPY go.mod go.sum ./
-RUN go mod download
-
-# Copy source code (including pre-built web/dist)
+# Copy source code (including pre-built web/dist and vendor)
 COPY . .
 
 ARG VERSION=0.1.0
