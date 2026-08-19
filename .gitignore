@@ -1,7 +1,5 @@
 # Binaries and build outputs
 /bin/
-/dist/
-web/dist/
 web/node_modules/
 *.exe
 *.exe~

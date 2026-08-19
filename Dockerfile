@@ -1,20 +1,5 @@
 # ==========================================
-# Stage 1: Build Vue 3 Frontend
-# ==========================================
-FROM node:22-alpine AS frontend-builder
-WORKDIR /app/web
-
-ARG NPM_REGISTRY=https://registry.npmmirror.com
-RUN npm config set registry ${NPM_REGISTRY}
-
-COPY web/package.json web/package-lock.json* ./
-RUN npm install
-
-COPY web/ ./
-RUN npm run build
-
-# ==========================================
-# Stage 2: Build Go Backend with Embed FS
+# Stage 1: Build Go Backend with Pre-built Embed FS
 # ==========================================
 FROM golang:1.25-bookworm AS backend-builder
 WORKDIR /app
@@ -25,9 +10,8 @@ ENV GOPROXY=https://goproxy.cn,https://proxy.golang.org,direct
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy source code and built frontend dist
+# Copy source code (including pre-built web/dist)
 COPY . .
-COPY --from=frontend-builder /app/web/dist /app/web/dist
 
 ARG VERSION=0.1.0
 ARG COMMIT=dev
@@ -41,7 +25,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     -o /bin/netip ./cmd/netip
 
 # ==========================================
-# Stage 3: Minimal Secure Runtime
+# Stage 2: Minimal Secure Runtime
 # ==========================================
 FROM debian:bookworm-slim AS runtime
 
