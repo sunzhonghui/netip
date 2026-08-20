@@ -46,10 +46,8 @@ function FileCodeCodeWrapper() {
   <header class="sticky top-0 z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Logo -->
-      <router-link to="/" class="flex items-center gap-2.5 font-bold text-lg text-slate-900 dark:text-white tracking-tight">
-        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white shadow-sm shadow-brand-500/20">
-          <Activity class="w-5 h-5" />
-        </div>
+      <router-link to="/" class="flex items-center gap-2.5 font-bold text-lg text-slate-900 dark:text-white tracking-tight group">
+        <img src="/favicon.svg" alt="NetIP Logo" class="w-8 h-8 rounded-lg shadow-sm transition-transform group-hover:scale-105" />
         <span class="text-xl">Net<span class="text-brand-600 dark:text-brand-400">IP</span></span>
       </router-link>
 

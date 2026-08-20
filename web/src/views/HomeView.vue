@@ -173,13 +173,16 @@ onMounted(() => {
   <div class="space-y-8">
     <!-- Header Section -->
     <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          您的网络
-        </h1>
-        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          实时公网 IP 地址与 IPv4 / IPv6 双栈支持状态
-        </p>
+      <div class="flex items-center gap-3.5">
+        <img src="/favicon.svg" alt="NetIP" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl shadow-md flex-shrink-0" />
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            您的网络
+          </h1>
+          <p class="mt-0.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            实时公网 IP 地址与 IPv4 / IPv6 双栈支持状态
+          </p>
+        </div>
       </div>
 
       <button
