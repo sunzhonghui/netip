@@ -3,7 +3,9 @@ package server
 import (
 	"io"
 	"io/fs"
+	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -12,14 +14,42 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ServeEmbeddedSPA serves embedded static assets from web.DistFS with SPA fallback to index.html.
+// ServeEmbeddedSPA serves static assets from STATIC_DIR on disk if available, or falls back to embedded web.DistFS.
 func ServeEmbeddedSPA(r *gin.Engine) {
-	distSubFS, err := fs.Sub(web.DistFS, "dist")
-	if err != nil {
+	var targetFS fs.FS
+
+	// 1. Check STATIC_DIR environment variable or mapped /web/dist volume directory
+	staticDir := os.Getenv("STATIC_DIR")
+	if staticDir == "" {
+		if stat, err := os.Stat("/web/dist"); err == nil && stat.IsDir() {
+			staticDir = "/web/dist"
+		} else if stat, err := os.Stat("./web/dist"); err == nil && stat.IsDir() {
+			staticDir = "./web/dist"
+		}
+	}
+
+	if staticDir != "" {
+		if stat, err := os.Stat(staticDir); err == nil && stat.IsDir() {
+			slog.Info("Serving frontend static assets from mapped host directory", "path", staticDir)
+			targetFS = os.DirFS(staticDir)
+		}
+	}
+
+	// 2. Fallback to embedded dist filesystem inside the Go binary
+	if targetFS == nil {
+		sub, err := fs.Sub(web.DistFS, "dist")
+		if err == nil {
+			slog.Info("Serving frontend static assets from embedded binary FS")
+			targetFS = sub
+		}
+	}
+
+	if targetFS == nil {
+		slog.Error("No valid static asset filesystem found")
 		return
 	}
 
-	fileServer := http.FileServer(http.FS(distSubFS))
+	fileServer := http.FileServer(http.FS(targetFS))
 
 	r.NoRoute(func(c *gin.Context) {
 		path := strings.TrimPrefix(c.Request.URL.Path, "/")
@@ -43,15 +73,15 @@ func ServeEmbeddedSPA(r *gin.Engine) {
 			return
 		}
 
-		// Try opening the requested file in embedded FS
-		if f, err := distSubFS.Open(path); err == nil {
+		// Try opening requested file in target FS
+		if f, err := targetFS.Open(path); err == nil {
 			_ = f.Close()
 			fileServer.ServeHTTP(c.Writer, c.Request)
 			return
 		}
 
-		// Fallback to index.html for Vue SPA client-side routes
-		indexFile, err := distSubFS.Open("index.html")
+		// Fallback to index.html for SPA client-side routes
+		indexFile, err := targetFS.Open("index.html")
 		if err != nil {
 			c.String(http.StatusNotFound, "Frontend static build not found")
 			return

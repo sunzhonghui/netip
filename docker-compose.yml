@@ -10,6 +10,7 @@ services:
     volumes:
       - ./data:/data
       - ./config:/config:ro
+      - ./web/dist:/web/dist:ro
     cap_add:
       - NET_RAW
     healthcheck:
