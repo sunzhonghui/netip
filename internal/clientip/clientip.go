@@ -36,7 +36,14 @@ func ClientIP(r *http.Request, trusted []netip.Prefix) netip.Addr {
 		return remoteIP
 	}
 
-	// Remote IP is trusted. Check X-Forwarded-For first
+	// Remote IP is trusted. Check CF-Connecting-IP first (Cloudflare)
+	if cf := r.Header.Get("CF-Connecting-IP"); cf != "" {
+		if ip, err := netip.ParseAddr(strings.TrimSpace(cf)); err == nil {
+			return normalizeIP(ip)
+		}
+	}
+
+	// Check X-Forwarded-For next
 	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
 		if ip := extractClientFromXFF(xff, trusted); ip.IsValid() {
 			return ip
