@@ -3,16 +3,85 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    letter-spacing: -0.015em;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased font-sans transition-colors duration-150;
+    @apply text-slate-900 dark:text-slate-100 antialiased font-sans transition-colors duration-200;
     min-height: 100vh;
+    background-color: #f8fafc;
+  }
+
+  .dark body {
+    background-color: #0b0f19;
   }
 }
 
+/* Background Atmosphere Mesh */
+.bg-ambient-light {
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 20%, rgba(37, 99, 235, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, rgba(96, 165, 250, 0.04) 0px, transparent 50%);
+}
+
+.dark .bg-ambient-dark {
+  background-image: 
+    radial-gradient(at 15% 10%, rgba(37, 99, 235, 0.12) 0px, transparent 50%),
+    radial-gradient(at 85% 15%, rgba(29, 78, 216, 0.1) 0px, transparent 50%),
+    radial-gradient(at 50% 60%, rgba(56, 189, 248, 0.04) 0px, transparent 50%);
+}
+
+/* Premium Card System */
 .custom-card {
-  @apply bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl shadow-sm transition-all;
+  @apply bg-white/90 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-2xl shadow-card transition-all duration-200;
 }
 
 .custom-card-hover {
-  @apply hover:border-brand-500/50 hover:shadow-md dark:hover:border-brand-500/40;
+  @apply hover:border-brand-500/40 dark:hover:border-brand-400/40 hover:shadow-card-hover hover:-translate-y-0.5;
+}
+
+/* Interactive Button */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm shadow-sm hover:shadow-glow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-medium text-xs sm:text-sm border border-slate-200 dark:border-slate-700/80 shadow-card transition-all active:scale-[0.98];
+}
+
+/* Status Badges */
+.badge-pill {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-colors;
+}
+
+.badge-brand {
+  @apply bg-brand-50 text-brand-700 border-brand-200/80 dark:bg-brand-950/60 dark:text-brand-300 dark:border-brand-800/80;
+}
+
+.badge-purple {
+  @apply bg-purple-50 text-purple-700 border-purple-200/80 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800/80;
+}
+
+.badge-emerald {
+  @apply bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80;
+}
+
+/* Polished Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-600;
 }

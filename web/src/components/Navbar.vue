@@ -55,64 +55,64 @@ function FileCodeCodeWrapper() {
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300">
         <router-link
           to="/"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           首页
         </router-link>
 
         <router-link
           to="/ip"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
-          IP 查询
+          IP 归属地
         </router-link>
 
         <router-link
           to="/dns"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           DNS 查询
         </router-link>
 
         <router-link
           to="/ping"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           Ping / TCPing
         </router-link>
 
         <router-link
           to="/ipv6"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           IPv6 检测
         </router-link>
 
         <router-link
           to="/ssl"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           SSL 证书
         </router-link>
 
         <router-link
           to="/speed"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           HTTP 测速
         </router-link>
 
         <router-link
           to="/docs/api"
-          class="px-3 py-1.5 rounded-lg hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
-          active-class="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 font-semibold"
+          class="px-3 py-1.5 rounded-xl hover:text-brand-600 hover:bg-slate-100/80 dark:hover:bg-slate-800/70 dark:hover:text-brand-400 transition-all text-xs lg:text-sm font-medium"
+          active-class="!text-brand-600 dark:!text-brand-300 !bg-brand-500/10 dark:!bg-brand-500/15 !font-bold"
         >
           API
         </router-link>

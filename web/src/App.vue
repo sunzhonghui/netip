@@ -12,7 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col bg-ambient-light dark:bg-ambient-dark">
     <Navbar />
     <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
       <router-view />

@@ -46,11 +46,11 @@ async function handleCopy() {
     @click.stop="handleCopy"
     :title="copied ? '已复制到剪贴板' : '点击复制'"
     :aria-label="copied ? '已复制' : '复制'"
-    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors border select-none"
+    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all border select-none shadow-2xs active:scale-95"
     :class="
       copied
         ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700'
-        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:text-white'
+        : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:text-brand-600 hover:border-brand-300 dark:bg-slate-800/90 dark:text-slate-300 dark:border-slate-700/80 dark:hover:bg-slate-700/90 dark:hover:text-brand-400 dark:hover:border-brand-600'
     "
   >
     <Check v-if="copied" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />

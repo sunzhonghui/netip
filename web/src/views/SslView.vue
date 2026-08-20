@@ -59,7 +59,7 @@ onMounted(() => {
     />
 
     <!-- Input Form -->
-    <div class="custom-card p-4 sm:p-6">
+    <div class="custom-card p-5 sm:p-7 shadow-card">
       <form @submit.prevent="executeCheck" class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
           <input
@@ -67,9 +67,9 @@ onMounted(() => {
             type="text"
             placeholder="输入域名或主机名，例如 ipw.3x.cx 或 github.com"
             aria-label="输入待检测主机名"
-            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all shadow-inner"
           />
-          <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <Search class="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
         </div>
 
         <div class="w-full sm:w-28">
@@ -78,14 +78,14 @@ onMounted(() => {
             type="number"
             placeholder="端口"
             aria-label="HTTPS 端口"
-            class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all"
           />
         </div>
 
         <button
           type="submit"
           :disabled="loading"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition-all disabled:opacity-50"
+          class="btn-primary"
         >
           <span>{{ loading ? '查询中...' : '查询证书' }}</span>
           <ArrowRight class="w-4 h-4" />

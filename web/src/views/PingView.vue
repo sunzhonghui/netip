@@ -75,31 +75,27 @@ onMounted(() => {
     />
 
     <!-- Control Form -->
-    <div class="custom-card p-4 sm:p-6 space-y-4">
+    <div class="custom-card p-5 sm:p-7 space-y-4 shadow-card">
       <!-- Mode toggle -->
-      <div class="flex items-center gap-6 border-b border-slate-100 dark:border-slate-800 pb-3">
-        <label class="flex items-center gap-2 text-sm font-semibold cursor-pointer select-none">
+      <div class="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+        <label class="flex items-center gap-2 text-xs sm:text-sm font-bold cursor-pointer select-none px-3 py-1.5 rounded-lg transition-all" :class="mode === 'icmp' ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'">
           <input
             v-model="mode"
             type="radio"
             value="icmp"
             class="text-brand-600 focus:ring-brand-500"
           />
-          <span :class="mode === 'icmp' ? 'text-brand-600 dark:text-brand-400' : 'text-slate-600 dark:text-slate-400'">
-            ICMP Ping (网络层)
-          </span>
+          <span>ICMP Ping (网络层)</span>
         </label>
 
-        <label class="flex items-center gap-2 text-sm font-semibold cursor-pointer select-none">
+        <label class="flex items-center gap-2 text-xs sm:text-sm font-bold cursor-pointer select-none px-3 py-1.5 rounded-lg transition-all" :class="mode === 'tcp' ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'">
           <input
             v-model="mode"
             type="radio"
             value="tcp"
             class="text-brand-600 focus:ring-brand-500"
           />
-          <span :class="mode === 'tcp' ? 'text-brand-600 dark:text-brand-400' : 'text-slate-600 dark:text-slate-400'">
-            TCPing (传输层端口)
-          </span>
+          <span>TCPing (传输层端口)</span>
         </label>
       </div>
 
@@ -110,9 +106,9 @@ onMounted(() => {
             type="text"
             placeholder="输入域名或 IP，例如 1.1.1.1 或 ipw.3x.cx"
             aria-label="输入目标地址"
-            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all shadow-inner"
           />
-          <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <Search class="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
         </div>
 
         <div v-if="mode === 'tcp'" class="w-full sm:w-28">
@@ -121,14 +117,14 @@ onMounted(() => {
             type="number"
             placeholder="端口"
             aria-label="目标端口"
-            class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all"
           />
         </div>
 
         <button
           type="submit"
           :disabled="loading"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition-all disabled:opacity-50"
+          class="btn-primary"
         >
           <span>{{ loading ? '测试中...' : '发起测试' }}</span>
           <ArrowRight class="w-4 h-4" />

@@ -65,7 +65,7 @@ watch(
     />
 
     <!-- Input Form -->
-    <div class="custom-card p-4 sm:p-6">
+    <div class="custom-card p-5 sm:p-7 shadow-card">
       <form @submit.prevent="executeQuery" class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
           <input
@@ -73,14 +73,14 @@ watch(
             type="text"
             placeholder="输入 AS 号或 IP，例如 AS4134 或 1.1.1.1"
             aria-label="输入 ASN 或 IP"
-            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all shadow-inner"
           />
-          <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <Search class="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
         </div>
         <button
           type="submit"
           :disabled="loading"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition-all disabled:opacity-50"
+          class="btn-primary"
         >
           <span>{{ loading ? '查询中...' : '查询 ASN' }}</span>
           <ArrowRight class="w-4 h-4" />

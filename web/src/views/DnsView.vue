@@ -61,8 +61,8 @@ onMounted(() => {
       :icon="Network"
     />
 
-    <!-- Input Form -->
-    <div class="custom-card p-4 sm:p-6 space-y-4">
+    <!-- Form -->
+    <div class="custom-card p-5 sm:p-7 space-y-4 shadow-card">
       <form @submit.prevent="executeQuery" class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
           <input
@@ -70,15 +70,15 @@ onMounted(() => {
             type="text"
             placeholder="输入域名，例如 ipw.3x.cx 或 8.8.8.8"
             aria-label="输入待查询域名"
-            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all shadow-inner"
           />
-          <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <Search class="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
         </div>
 
         <select
           v-model="recordType"
           aria-label="选择 DNS 记录类型"
-          class="px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+          class="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-950/60 text-slate-900 dark:text-white font-mono text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/40"
         >
           <option v-for="t in types" :key="t" :value="t">{{ t }} 记录</option>
         </select>
@@ -86,7 +86,7 @@ onMounted(() => {
         <button
           type="submit"
           :disabled="loading"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition-all disabled:opacity-50"
+          class="btn-primary"
         >
           <span>{{ loading ? '查询中...' : '查询' }}</span>
           <ArrowRight class="w-4 h-4" />
@@ -94,18 +94,18 @@ onMounted(() => {
       </form>
 
       <!-- Record type quick pills -->
-      <div class="flex flex-wrap items-center gap-1.5 pt-1">
+      <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 dark:border-slate-800/80 pt-3">
         <span class="text-xs text-slate-400 dark:text-slate-500 mr-1 font-medium">常用类型:</span>
         <button
           v-for="t in types"
           :key="t"
           type="button"
           @click="recordType = t; executeQuery()"
-          class="px-2 py-0.5 rounded text-xs font-mono font-medium transition-colors border"
+          class="px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all border"
           :class="
             recordType === t
-              ? 'bg-brand-500 text-white border-brand-600 dark:bg-brand-600 dark:border-brand-500'
-              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+              ? 'bg-brand-600 text-white border-brand-700 shadow-sm'
+              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 hover:border-brand-500/40'
           "
         >
           {{ t }}
