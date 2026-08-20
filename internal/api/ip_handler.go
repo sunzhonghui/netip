@@ -129,6 +129,13 @@ func (h *IPHandler) resolveIP(addr netip.Addr) *IPDetailsResponse {
 		resp.ASN = asnRes.ASN
 		resp.ASName = asnRes.ASName
 		resp.Network = asnRes.Network
+		if resp.Country == "" && asnRes.Country != "" {
+			resp.Country = asnRes.Country
+			resp.CountryCode = asnRes.Country
+		}
+		if resp.ISP == "" && asnRes.ASName != "" {
+			resp.ISP = asnRes.ASName
+		}
 	}
 
 	return resp

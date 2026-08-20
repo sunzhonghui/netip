@@ -24,34 +24,34 @@ type cacheEntry struct {
 
 // ASNService manages ASN lookups via local mmdb and online fallback.
 type ASNService struct {
-	providers []ASNProvider
-	mu        sync.RWMutex
-	cache     map[string]cacheEntry
+	providers  []ASNProvider
+	mu         sync.RWMutex
+	cache      map[string]cacheEntry
 	httpClient *http.Client
 }
 
 // Well-known popular ASNs for instant local resolution
 var wellKnownASNs = map[int]ASNResult{
-	4134:  {ASN: 4134, ASName: "CHINANET-BACKBONE (China Telecom)", Country: "CN", Registry: "APNIC"},
-	4809:  {ASN: 4809, ASName: "China Telecom CN2", Country: "CN", Registry: "APNIC"},
-	4837:  {ASN: 4837, ASName: "CHINA169-BACKBONE (China Unicom)", Country: "CN", Registry: "APNIC"},
-	9929:  {ASN: 9929, ASName: "China Unicom Industrial Backbone", Country: "CN", Registry: "APNIC"},
-	9808:  {ASN: 9808, ASName: "CMNET-GD (China Mobile)", Country: "CN", Registry: "APNIC"},
-	56040: {ASN: 56040, ASName: "China Mobile International", Country: "HK", Registry: "APNIC"},
-	4538:  {ASN: 4538, ASName: "CERNET (China Education and Research Network)", Country: "CN", Registry: "APNIC"},
-	7497:  {ASN: 7497, ASName: "CSTNET (China Science and Technology Network)", Country: "CN", Registry: "APNIC"},
-	24424: {ASN: 24424, ASName: "China Broadnet (CBN)", Country: "CN", Registry: "APNIC"},
-	13335: {ASN: 13335, ASName: "CLOUDFLARENET", Country: "US", Registry: "ARIN"},
-	15169: {ASN: 15169, ASName: "GOOGLE", Country: "US", Registry: "ARIN"},
-	16509: {ASN: 16509, ASName: "AMAZON-02", Country: "US", Registry: "ARIN"},
-	8075:  {ASN: 8075, ASName: "MICROSOFT-CORP", Country: "US", Registry: "ARIN"},
-	32934: {ASN: 32934, ASName: "FACEBOOK", Country: "US", Registry: "ARIN"},
-	20940: {ASN: 20940, ASName: "AKAMAI-ASN1", Country: "NL", Registry: "RIPE"},
-	54113: {ASN: 54113, ASName: "FASTLY", Country: "US", Registry: "ARIN"},
-	714:   {ASN: 714, ASName: "APPLE-ENGINEERING", Country: "US", Registry: "ARIN"},
-	37963: {ASN: 37963, ASName: "ALIBABA-CN-NET", Country: "CN", Registry: "APNIC"},
-	45102: {ASN: 45102, ASName: "ALIBABA-US-NET", Country: "US", Registry: "ARIN"},
-	132203:{ASN: 132203, ASName: "TENCENT-NET-AP", Country: "CN", Registry: "APNIC"},
+	4134:   {ASN: 4134, ASName: "CHINANET-BACKBONE (China Telecom)", Country: "CN", Registry: "APNIC"},
+	4809:   {ASN: 4809, ASName: "China Telecom CN2", Country: "CN", Registry: "APNIC"},
+	4837:   {ASN: 4837, ASName: "CHINA169-BACKBONE (China Unicom)", Country: "CN", Registry: "APNIC"},
+	9929:   {ASN: 9929, ASName: "China Unicom Industrial Backbone", Country: "CN", Registry: "APNIC"},
+	9808:   {ASN: 9808, ASName: "CMNET-GD (China Mobile)", Country: "CN", Registry: "APNIC"},
+	56040:  {ASN: 56040, ASName: "China Mobile International", Country: "HK", Registry: "APNIC"},
+	4538:   {ASN: 4538, ASName: "CERNET (China Education and Research Network)", Country: "CN", Registry: "APNIC"},
+	7497:   {ASN: 7497, ASName: "CSTNET (China Science and Technology Network)", Country: "CN", Registry: "APNIC"},
+	24424:  {ASN: 24424, ASName: "China Broadnet (CBN)", Country: "CN", Registry: "APNIC"},
+	13335:  {ASN: 13335, ASName: "CLOUDFLARENET", Country: "US", Registry: "ARIN"},
+	15169:  {ASN: 15169, ASName: "GOOGLE", Country: "US", Registry: "ARIN"},
+	16509:  {ASN: 16509, ASName: "AMAZON-02", Country: "US", Registry: "ARIN"},
+	8075:   {ASN: 8075, ASName: "MICROSOFT-CORP", Country: "US", Registry: "ARIN"},
+	32934:  {ASN: 32934, ASName: "FACEBOOK", Country: "US", Registry: "ARIN"},
+	20940:  {ASN: 20940, ASName: "AKAMAI-ASN1", Country: "NL", Registry: "RIPE"},
+	54113:  {ASN: 54113, ASName: "FASTLY", Country: "US", Registry: "ARIN"},
+	714:    {ASN: 714, ASName: "APPLE-ENGINEERING", Country: "US", Registry: "ARIN"},
+	37963:  {ASN: 37963, ASName: "ALIBABA-CN-NET", Country: "CN", Registry: "APNIC"},
+	45102:  {ASN: 45102, ASName: "ALIBABA-US-NET", Country: "US", Registry: "ARIN"},
+	132203: {ASN: 132203, ASName: "TENCENT-NET-AP", Country: "CN", Registry: "APNIC"},
 }
 
 // NewASNService initializes ASN service.
@@ -107,7 +107,7 @@ func (s *ASNService) LookupIP(addr netip.Addr) *ASNResult {
 		}
 	}
 
-	// Fallback: try RDAP / online lookup
+	// Fallback: try online lookup
 	res := s.lookupIPOnline(addr)
 	s.saveToCache(key, res)
 	return res
@@ -153,36 +153,76 @@ func (s *ASNService) LookupQuery(query string) (*ASNResult, error) {
 }
 
 func (s *ASNService) lookupIPOnline(addr netip.Addr) *ASNResult {
-	// Query RDAP IP endpoint
 	ctx, cancel := context.WithTimeout(context.Background(), config.DefaultHTTPTimeout)
 	defer cancel()
 
-	url := fmt.Sprintf("https://rdap.arin.net/registry/ip/%s", addr.String())
+	// 1. Try ip-api for instant ASN & ASName resolution
+	url := fmt.Sprintf("http://ip-api.com/json/%s?lang=zh-CN", addr.String())
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err == nil {
+		resp, err := s.httpClient.Do(req)
+		if err == nil && resp.StatusCode == http.StatusOK {
+			defer resp.Body.Close()
+			var data struct {
+				Status      string `json:"status"`
+				CountryCode string `json:"countryCode"`
+				AS          string `json:"as"`
+				ISP         string `json:"isp"`
+				Org         string `json:"org"`
+			}
+			if err := json.NewDecoder(resp.Body).Decode(&data); err == nil && data.Status == "success" {
+				asnNum := 0
+				asName := data.AS
+				if strings.HasPrefix(strings.ToUpper(data.AS), "AS") {
+					parts := strings.SplitN(data.AS, " ", 2)
+					cleanASN := strings.TrimPrefix(strings.ToUpper(parts[0]), "AS")
+					if n, err := strconv.Atoi(cleanASN); err == nil {
+						asnNum = n
+					}
+					if len(parts) > 1 {
+						asName = parts[1]
+					}
+				}
+				if asName == "" {
+					asName = data.ISP
+				}
+				return &ASNResult{
+					ASN:     asnNum,
+					ASName:  asName,
+					Country: data.CountryCode,
+					Source:  "ip-api",
+				}
+			}
+		}
+	}
+
+	// 2. Fallback to RDAP IP endpoint
+	urlRDAP := fmt.Sprintf("https://rdap.arin.net/registry/ip/%s", addr.String())
+	reqRDAP, err := http.NewRequestWithContext(ctx, "GET", urlRDAP, nil)
 	if err != nil {
 		return &ASNResult{Source: "none"}
 	}
-	req.Header.Set("Accept", "application/rdap+json, application/json")
+	reqRDAP.Header.Set("Accept", "application/rdap+json, application/json")
 
-	resp, err := s.httpClient.Do(req)
-	if err != nil || resp.StatusCode != http.StatusOK {
+	respRDAP, err := s.httpClient.Do(reqRDAP)
+	if err != nil || respRDAP.StatusCode != http.StatusOK {
 		return &ASNResult{Source: "none"}
 	}
-	defer resp.Body.Close()
+	defer respRDAP.Body.Close()
 
-	var data struct {
-		Name       string `json:"name"`
-		Handle     string `json:"handle"`
-		Country    string `json:"country"`
-		StartAddr  string `json:"startAddress"`
-		EndAddr    string `json:"endAddress"`
+	var rdapData struct {
+		Name      string `json:"name"`
+		Handle    string `json:"handle"`
+		Country   string `json:"country"`
+		StartAddr string `json:"startAddress"`
+		EndAddr   string `json:"endAddress"`
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&data); err == nil {
+	if err := json.NewDecoder(respRDAP.Body).Decode(&rdapData); err == nil {
 		return &ASNResult{
-			ASName:  data.Name,
-			Country: data.Country,
-			Network: fmt.Sprintf("%s - %s", data.StartAddr, data.EndAddr),
+			ASName:  rdapData.Name,
+			Country: rdapData.Country,
+			Network: fmt.Sprintf("%s - %s", rdapData.StartAddr, rdapData.EndAddr),
 			Source:  "rdap",
 		}
 	}

@@ -1,11 +1,18 @@
 package ipgeo
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"log/slog"
+	"net/http"
 	"net/netip"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"netip/internal/config"
+	"netip/internal/security/ssrf"
 )
 
 type cacheEntry struct {
@@ -13,17 +20,19 @@ type cacheEntry struct {
 	expiresAt time.Time
 }
 
-// GeoService aggregates multiple geo providers with in-memory caching.
+// GeoService aggregates multiple geo providers with in-memory caching and online fallback.
 type GeoService struct {
-	providers []GeoProvider
-	mu        sync.RWMutex
-	cache     map[string]cacheEntry
+	providers  []GeoProvider
+	mu         sync.RWMutex
+	cache      map[string]cacheEntry
+	httpClient *http.Client
 }
 
 // NewGeoService initializes GeoService searching for database files in dataDir.
 func NewGeoService(dataDir string) *GeoService {
 	svc := &GeoService{
-		cache: make(map[string]cacheEntry),
+		cache:      make(map[string]cacheEntry),
+		httpClient: ssrf.NewSafeHTTPClient(config.DefaultHTTPTimeout),
 	}
 
 	ipdbDir := filepath.Join(dataDir, "ipdb")
@@ -81,6 +90,7 @@ func (s *GeoService) Lookup(addr netip.Addr) *GeoResult {
 		Source: "none",
 	}
 
+	// 1. Try local databases (ip2region, MaxMind)
 	for _, p := range s.providers {
 		if !p.Available() {
 			continue
@@ -114,6 +124,18 @@ func (s *GeoService) Lookup(addr netip.Addr) *GeoResult {
 		}
 	}
 
+	// 2. If country is still empty (e.g. no local DB files mounted), fallback to online query
+	if merged.Country == "" {
+		if onlineRes := s.lookupOnline(addr); onlineRes != nil && onlineRes.Country != "" {
+			merged.Country = onlineRes.Country
+			merged.CountryCode = onlineRes.CountryCode
+			merged.Province = onlineRes.Province
+			merged.City = onlineRes.City
+			merged.ISP = onlineRes.ISP
+			merged.Source = onlineRes.Source
+		}
+	}
+
 	// Cache result for 1 hour
 	s.mu.Lock()
 	if len(s.cache) > 20000 {
@@ -127,4 +149,53 @@ func (s *GeoService) Lookup(addr netip.Addr) *GeoResult {
 	s.mu.Unlock()
 
 	return merged
+}
+
+func (s *GeoService) lookupOnline(addr netip.Addr) *GeoResult {
+	ctx, cancel := context.WithTimeout(context.Background(), config.DefaultHTTPTimeout)
+	defer cancel()
+
+	url := fmt.Sprintf("http://ip-api.com/json/%s?lang=zh-CN", addr.String())
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil
+	}
+
+	resp, err := s.httpClient.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil
+	}
+
+	var data struct {
+		Status      string `json:"status"`
+		Country     string `json:"country"`
+		CountryCode string `json:"countryCode"`
+		RegionName  string `json:"regionName"`
+		City        string `json:"city"`
+		ISP         string `json:"isp"`
+		Org         string `json:"org"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil || data.Status != "success" {
+		return nil
+	}
+
+	isp := data.ISP
+	if isp == "" {
+		isp = data.Org
+	}
+
+	return &GeoResult{
+		Country:     data.Country,
+		CountryCode: data.CountryCode,
+		Province:    data.RegionName,
+		City:        data.City,
+		ISP:         isp,
+		Source:      "ip-api",
+	}
 }
