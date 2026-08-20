@@ -58,8 +58,40 @@ func NewGeoService(dataDir string) *GeoService {
 	return svc
 }
 
+// Reload reloads the geo database providers from dataDir dynamically.
+func (s *GeoService) Reload(dataDir string) {
+	ipdbDir := filepath.Join(dataDir, "ipdb")
+	var newProviders []GeoProvider
+
+	// 1. Try ip2region
+	ip2regionPath := filepath.Join(ipdbDir, "ip2region.xdb")
+	if p, err := NewIP2RegionProvider(ip2regionPath); err == nil {
+		newProviders = append(newProviders, p)
+		slog.Info("Reloaded ip2region database", "path", ip2regionPath)
+	}
+
+	// 2. Try MaxMind City
+	maxmindPath := filepath.Join(ipdbDir, "GeoLite2-City.mmdb")
+	if p, err := NewMaxMindCityProvider(maxmindPath); err == nil {
+		newProviders = append(newProviders, p)
+		slog.Info("Reloaded MaxMind City database", "path", maxmindPath)
+	}
+
+	s.mu.Lock()
+	oldProviders := s.providers
+	s.providers = newProviders
+	s.cache = make(map[string]cacheEntry)
+	s.mu.Unlock()
+
+	for _, p := range oldProviders {
+		_ = p.Close()
+	}
+}
+
 // Close releases all underlying database resources.
 func (s *GeoService) Close() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	for _, p := range s.providers {
 		_ = p.Close()
 	}

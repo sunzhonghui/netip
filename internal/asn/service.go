@@ -73,8 +73,32 @@ func NewASNService(dataDir string) *ASNService {
 	return svc
 }
 
+// Reload reloads ASN providers from dataDir dynamically.
+func (s *ASNService) Reload(dataDir string) {
+	ipdbDir := filepath.Join(dataDir, "ipdb")
+	maxmindASNPath := filepath.Join(ipdbDir, "GeoLite2-ASN.mmdb")
+	var newProviders []ASNProvider
+
+	if p, err := NewMaxMindASNProvider(maxmindASNPath); err == nil {
+		newProviders = append(newProviders, p)
+		slog.Info("Reloaded MaxMind ASN database", "path", maxmindASNPath)
+	}
+
+	s.mu.Lock()
+	oldProviders := s.providers
+	s.providers = newProviders
+	s.cache = make(map[string]cacheEntry)
+	s.mu.Unlock()
+
+	for _, p := range oldProviders {
+		_ = p.Close()
+	}
+}
+
 // Close releases resources.
 func (s *ASNService) Close() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	for _, p := range s.providers {
 		_ = p.Close()
 	}

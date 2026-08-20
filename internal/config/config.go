@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // AppConfig contains all runtime configurations for NetIP.
@@ -58,6 +59,12 @@ type AppConfig struct {
 	ConcurrencySpeed int
 	ConcurrencyWHOIS int
 
+	// IP Database Auto-Update
+	IPDBAutoUpdate     bool
+	IPDBUpdateInterval time.Duration
+	MaxMindLicenseKey  string
+	IP2RegionURL       string
+
 	// Build info
 	Version   string
 	Commit    string
@@ -107,6 +114,12 @@ func LoadConfig() *AppConfig {
 		ConcurrencySpeed: getEnvInt("CONCURRENCY_SPEED", 10),
 		ConcurrencyWHOIS: getEnvInt("CONCURRENCY_WHOIS", 10),
 
+		// IP Database Auto-Update
+		IPDBAutoUpdate:     getEnvBool("IPDB_AUTO_UPDATE", true),
+		IPDBUpdateInterval: getEnvDuration("IPDB_UPDATE_INTERVAL", 7*24*time.Hour),
+		MaxMindLicenseKey:  getEnv("MAXMIND_LICENSE_KEY", ""),
+		IP2RegionURL:       getEnv("IP2REGION_URL", ""),
+
 		Version:   Version,
 		Commit:    Commit,
 		BuildTime: BuildTime,
@@ -147,6 +160,15 @@ func getEnvBool(key string, defaultVal bool) bool {
 	if val := os.Getenv(key); val != "" {
 		val = strings.ToLower(strings.TrimSpace(val))
 		return val == "true" || val == "1" || val == "yes"
+	}
+	return defaultVal
+}
+
+func getEnvDuration(key string, defaultVal time.Duration) time.Duration {
+	if val := os.Getenv(key); val != "" {
+		if d, err := time.ParseDuration(strings.TrimSpace(val)); err == nil {
+			return d
+		}
 	}
 	return defaultVal
 }

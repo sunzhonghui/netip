@@ -13,6 +13,7 @@ import (
 	"netip/internal/asn"
 	"netip/internal/config"
 	"netip/internal/dnsx"
+	"netip/internal/ipdb"
 	"netip/internal/ipgeo"
 	"netip/internal/middleware"
 	"netip/internal/pingx"
@@ -30,11 +31,12 @@ import (
 
 // Server encapsulates the NetIP HTTP server.
 type Server struct {
-	cfg        *config.AppConfig
-	engine     *gin.Engine
-	httpServer *http.Server
-	geoSvc     *ipgeo.GeoService
-	asnSvc     *asn.ASNService
+	cfg         *config.AppConfig
+	engine      *gin.Engine
+	httpServer  *http.Server
+	geoSvc      *ipgeo.GeoService
+	asnSvc      *asn.ASNService
+	ipdbUpdater *ipdb.Updater
 }
 
 // NewServer initializes NetIP application services and routing.
@@ -154,12 +156,15 @@ func NewServer(cfg *config.AppConfig) *Server {
 		Handler: engine,
 	}
 
+	ipdbUpdater := ipdb.NewUpdater(cfg, geoSvc, asnSvc)
+
 	return &Server{
-		cfg:        cfg,
-		engine:     engine,
-		httpServer: httpSrv,
-		geoSvc:     geoSvc,
-		asnSvc:     asnSvc,
+		cfg:         cfg,
+		engine:      engine,
+		httpServer:  httpSrv,
+		geoSvc:      geoSvc,
+		asnSvc:      asnSvc,
+		ipdbUpdater: ipdbUpdater,
 	}
 }
 
@@ -170,6 +175,11 @@ func (s *Server) Run() error {
 		"public_domain", s.cfg.PublicDomain,
 		"version", s.cfg.Version,
 	)
+
+	// Start IP database auto-updater in background
+	updaterCtx, cancelUpdater := context.WithCancel(context.Background())
+	defer cancelUpdater()
+	s.ipdbUpdater.Start(updaterCtx)
 
 	errCh := make(chan error, 1)
 	go func() {
