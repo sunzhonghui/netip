@@ -127,25 +127,25 @@ const apis = [
     />
 
     <!-- Quick cURL Showcase -->
-    <div class="custom-card p-6 bg-slate-900 text-slate-100 font-mono space-y-4">
+    <div class="rounded-xl p-6 bg-slate-950 text-slate-100 font-mono space-y-4 border border-slate-800/90 shadow-md">
       <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3 font-sans">
         <div class="flex items-center gap-2 font-semibold">
           <Terminal class="w-4 h-4 text-brand-400" />
-          <span>终端快捷使用示例 (CLI Quick Start)</span>
+          <span class="text-slate-200 font-bold">终端快捷使用示例 (CLI Quick Start)</span>
         </div>
       </div>
 
       <div class="space-y-3 text-xs sm:text-sm">
-        <div class="flex items-center justify-between gap-4 p-2.5 rounded bg-slate-950/60">
-          <span class="text-emerald-400">curl https://4.{{ baseDomain }}</span>
+        <div class="flex items-center justify-between gap-4 p-3 rounded-lg bg-black border border-slate-800">
+          <span class="text-emerald-400 font-mono font-medium">curl https://4.{{ baseDomain }}</span>
           <CopyButton :text="`curl https://4.${baseDomain}`" label="复制" />
         </div>
-        <div class="flex items-center justify-between gap-4 p-2.5 rounded bg-slate-950/60">
-          <span class="text-purple-400">curl https://6.{{ baseDomain }}</span>
+        <div class="flex items-center justify-between gap-4 p-3 rounded-lg bg-black border border-slate-800">
+          <span class="text-purple-400 font-mono font-medium">curl https://6.{{ baseDomain }}</span>
           <CopyButton :text="`curl https://6.${baseDomain}`" label="复制" />
         </div>
-        <div class="flex items-center justify-between gap-4 p-2.5 rounded bg-slate-950/60">
-          <span class="text-blue-400">curl https://test.{{ baseDomain }}</span>
+        <div class="flex items-center justify-between gap-4 p-3 rounded-lg bg-black border border-slate-800">
+          <span class="text-blue-400 font-mono font-medium">curl https://test.{{ baseDomain }}</span>
           <CopyButton :text="`curl https://test.${baseDomain}`" label="复制" />
         </div>
       </div>
@@ -182,14 +182,14 @@ const apis = [
               <span>调用示例:</span>
               <CopyButton :text="apiItem.example" :icon-only="true" />
             </div>
-            <pre class="p-3 rounded-lg bg-slate-900 text-emerald-400 overflow-x-auto whitespace-pre-wrap">{{ apiItem.example }}</pre>
+            <pre class="p-3.5 rounded-lg bg-black border border-slate-800 text-emerald-400 overflow-x-auto whitespace-pre-wrap">{{ apiItem.example }}</pre>
           </div>
 
           <div class="space-y-1.5">
             <div class="flex items-center justify-between text-slate-400 font-sans">
               <span>响应示例:</span>
             </div>
-            <pre class="p-3 rounded-lg bg-slate-900 text-slate-200 overflow-x-auto max-h-40">{{ apiItem.response }}</pre>
+            <pre class="p-3.5 rounded-lg bg-black border border-slate-800 text-slate-200 overflow-x-auto max-h-40">{{ apiItem.response }}</pre>
           </div>
         </div>
       </div>
