@@ -15,6 +15,7 @@ import {
 } from 'lucide-vue-next'
 import IPCard from '@/components/IPCard.vue'
 import { api, fetchWithTimeout } from '@/utils/api'
+import { getDomainInfo } from '@/utils/domain'
 import type { IPDetails } from '@/types'
 
 const loading = ref(true)
@@ -108,13 +109,8 @@ async function detectNetwork() {
   preferred.value = 'unknown'
 
   // Dynamic host determination
-  const host = window.location.hostname
-  const parts = host.split('.')
-  let baseDomain = host
-  if (parts.length > 2) {
-    baseDomain = parts.slice(1).join('.')
-  }
-  const protocol = window.location.protocol
+  const { baseDomain } = getDomainInfo()
+  const protocol = window.location.protocol === 'https:' ? 'https:' : (baseDomain === 'ipw.3x.cx' ? 'https:' : window.location.protocol)
 
   const v4Url = `${protocol}//4.${baseDomain}/json`
   const v6Url = `${protocol}//6.${baseDomain}/json`
