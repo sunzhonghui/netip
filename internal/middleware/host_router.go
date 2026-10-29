@@ -53,12 +53,9 @@ func HostRouter(cfg *config.AppConfig, limiter *ratelimit.IPRateLimiter) gin.Han
 
 			// Set CORS for frontend detection
 			origin := c.GetHeader("Origin")
-			if cfg.PublicAppOrigin != "" {
-				if origin == cfg.PublicAppOrigin || cfg.PublicAppOrigin == "*" {
-					c.Header("Access-Control-Allow-Origin", origin)
-				} else {
-					c.Header("Access-Control-Allow-Origin", cfg.PublicAppOrigin)
-				}
+			c.Header("Vary", "Origin")
+			if origin != "" {
+				c.Header("Access-Control-Allow-Origin", origin)
 			} else {
 				c.Header("Access-Control-Allow-Origin", "*")
 			}
