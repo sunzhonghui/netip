@@ -17,4 +17,5 @@ Disallow: /metrics
 Disallow: /healthz
 Disallow: /readyz
 
+Sitemap: https://ipw.3x.cx/sitemap.xml
 Sitemap: https://ip.ipw.3x.cx/sitemap.xml

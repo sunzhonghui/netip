@@ -147,7 +147,10 @@ router.afterEach((to) => {
     canonicalLink.setAttribute('rel', 'canonical')
     document.head.appendChild(canonicalLink)
   }
-  canonicalLink.setAttribute('href', `https://ip.ipw.3x.cx${to.path}`)
+  const currentOrigin = (typeof window !== 'undefined' && window.location.origin && !window.location.origin.includes('localhost'))
+    ? window.location.origin
+    : 'https://ipw.3x.cx'
+  canonicalLink.setAttribute('href', `${currentOrigin}${to.path}`)
 })
 
 export default router
